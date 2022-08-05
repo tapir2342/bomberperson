@@ -5,8 +5,8 @@
 [ext_resource path="res://theme.tres" type="Theme" id=5]
 
 [node name="Main" type="Node2D"]
+pause_mode = 2
 script = ExtResource( 2 )
-_server = true
 
 [node name="Ground" type="TileMap" parent="."]
 tile_set = ExtResource( 1 )
@@ -32,19 +32,3 @@ theme = ExtResource( 5 )
 [node name="PeerMode" type="Label" parent="CanvasLayer/Control"]
 margin_right = 170.0
 margin_bottom = 54.0
-
-[node name="PlayAsServer" type="Button" parent="CanvasLayer/Control"]
-visible = false
-margin_left = 109.0
-margin_top = 259.0
-margin_right = 311.0
-margin_bottom = 343.0
-text = "Server"
-
-[node name="PlayAsClient" type="Button" parent="CanvasLayer/Control"]
-visible = false
-margin_left = 331.0
-margin_top = 260.0
-margin_right = 533.0
-margin_bottom = 344.0
-text = "Client"
