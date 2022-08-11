@@ -47,61 +47,26 @@ func remove_rocks() -> void:
 
 
 func spread(origin: Vector2) -> Array:
-	var coords := []
+	var cells := []
+	var directions := [
+		{x = +1, y = 0},
+		{x = -1, y = 0},
+		{x = 0, y = +1},
+		{x = 0, y = -1},
+	]
 
-	for i in range(0, self.radius + 1):
-		var xoff = int(origin.x + i)
-		var yoff = int(origin.y)
+	for direction in directions:
+		for i in range(0, self.radius + 1):
+			var xoff = int(origin.x + i * direction.x)
+			var yoff = int(origin.y + i * direction.y)
 
-		if _walls.get_cell(xoff, yoff) != -1:
-			break
+			if _walls.get_cell(xoff, yoff) != -1:
+				break
 
-		if _rocks.get_cell(xoff, yoff) != -1:
-			coords.append([xoff, yoff])
-			break
+			if _rocks.get_cell(xoff, yoff) != -1:
+				cells.append([xoff, yoff])
+				break
 
-		coords.append([xoff, yoff])
+			cells.append([xoff, yoff])
 
-	# Go left
-	for i in range(0, self.radius + 1):
-		var xoff = int(origin.x - i)
-		var yoff = int(origin.y)
-
-		if _walls.get_cell(xoff, yoff) != -1:
-			break
-
-		if _rocks.get_cell(xoff, yoff) != -1:
-			coords.append([xoff, yoff])
-			break
-
-		coords.append([xoff, yoff])
-
-	# Go up
-	for i in range(0, self.radius + 1):
-		var xoff = int(origin.x)
-		var yoff = int(origin.y - i)
-
-		if _walls.get_cell(xoff, yoff) != -1:
-			break
-
-		if _rocks.get_cell(xoff, yoff) != -1:
-			coords.append([xoff, yoff])
-			break
-
-		coords.append([xoff, yoff])
-
-	# Go down
-	for i in range(0, self.radius + 1):
-		var xoff = int(origin.x)
-		var yoff = int(origin.y + i)
-
-		if _walls.get_cell(xoff, yoff) != -1:
-			break
-
-		if _rocks.get_cell(xoff, yoff) != -1:
-			coords.append([xoff, yoff])
-			break
-
-		coords.append([xoff, yoff])
-
-	return coords
+	return cells
