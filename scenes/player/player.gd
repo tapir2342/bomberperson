@@ -27,6 +27,8 @@ func _ready():
 
 	puppet_position = global_position
 
+	$MasterHighlight.visible = self.is_network_master()
+
 
 func _unhandled_input(event):
 	if event.is_action_pressed("player_plant_bomb") and self.is_network_master():
