@@ -13,11 +13,11 @@ onready var _explosions: TileMap = get_node("/root/Main/World/Explosions")
 var from_player
 
 
-func _ready():
+func _ready() -> void:
 	_timer.connect("timeout", self, "explode")
 
 
-func explode():
+func explode() -> void:
 	_audio_player.play()
 	_sprite.visible = false
 

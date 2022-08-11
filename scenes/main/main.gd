@@ -2,7 +2,7 @@ extends Node2D
 
 const Player := preload("res://scenes/player/player.tscn")
 
-var _spawnpoints = [
+var _spawnpoints := [
 	Vector2(48, 48),
 	Vector2(48, 432),
 	Vector2(432, 48),
