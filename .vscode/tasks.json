@@ -2,43 +2,17 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run server & clients",
+            "label": "Run",
             "type": "shell",
             "command": "make",
             "windows": {
-                "command": "cmd.exe /c run_all.bat"
+                "command": "cmd.exe /k run_all.bat"
             },
             "group": "build",
             "presentation": {
-                "reveal": "silent",
+                "reveal": "always",
                 "panel": "shared"
-            }
-        },
-        {
-            "label": "Run server",
-            "type": "shell",
-            "command": "make",
-            "windows": {
-                "command": "cmd.exe /c run_server.bat"
             },
-            "group": "build",
-            "presentation": {
-                "reveal": "silent",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Run clients",
-            "type": "shell",
-            "command": "make",
-            "windows": {
-                "command": "cmd.exe /c run_clients.bat"
-            },
-            "group": "build",
-            "presentation": {
-                "reveal": "silent",
-                "panel": "shared"
-            }
         },
     ]
 }
