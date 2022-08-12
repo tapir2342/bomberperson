@@ -4,6 +4,8 @@ extends KinematicBody2D
 const Bomb := preload("res://scenes/bomb/bomb.tscn")
 
 onready var _sprite: Sprite = $Sprite
+onready var _hurtbox: Area2D = $Hurtbox
+onready var _nid: int = get_tree().get_network_unique_id()
 
 var inputs := {
 	"player_right": Vector2.RIGHT,
@@ -20,21 +22,16 @@ puppet var puppet_position = Vector2()
 
 
 func _ready():
+	_hurtbox.connect("body_entered", self, "_on_body_entered")
 	self._sprite.texture = load(self.sprite_name)
-
-	#position = position.snapped(Vector2.ONE * Game.tile_size)
-	#position += Vector2.ONE * Game.tile_size / 2
-
 	puppet_position = global_position
-
 	$MasterHighlight.visible = self.is_network_master()
 
 
 func _unhandled_input(event):
 	if event.is_action_pressed("player_plant_bomb") and self.is_network_master():
 		bomb_index += 1
-		var nid = get_tree().get_network_unique_id()
-		var name = "bomb_%d_%d" % [nid, bomb_index]
+		var name = "bomb_%d_%d" % [_nid, bomb_index]
 		rpc("plant_bomb", name, self.global_position, self)
 
 	for dir in inputs.keys():
@@ -49,6 +46,11 @@ func _physics_process(_delta):
 		position = puppet_position
 
 
+func _on_body_entered(body: Node):
+	Game.rpc_id(1, "register_player_death")
+	rpc("die")
+
+
 func move(dir):
 	self.velocity = inputs[dir] * speed * (Game.tile_size / 1)
 	self.move_and_collide(self.velocity)
@@ -61,3 +63,7 @@ remotesync func plant_bomb(name: String, position: Vector2, owner: Player) -> vo
 	bomb.set_name(name)
 	bomb.set_as_toplevel(true)
 	add_child(bomb)
+
+
+remotesync func die() -> void:
+	self.visible = false

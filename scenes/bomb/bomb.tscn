@@ -2,7 +2,7 @@
 
 [ext_resource path="res://scenes/bomb/bomb.gd" type="Script" id=1]
 [ext_resource path="res://sprites/bomb.png" type="Texture" id=2]
-[ext_resource path="res://explosion.wav" type="AudioStream" id=3]
+[ext_resource path="res://scenes/bomb/explosion.wav" type="AudioStream" id=3]
 
 [node name="Bomb" type="Area2D"]
 scale = Vector2( 0.1, 0.1 )

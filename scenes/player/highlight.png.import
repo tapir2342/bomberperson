@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/highlight.png-9cb9e45021c07c84090fde948fc963e7.stex"
+path="res://.import/highlight.png-448f0fc4838ebe5fadfaaae0552cc428.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://highlight.png"
-dest_files=[ "res://.import/highlight.png-9cb9e45021c07c84090fde948fc963e7.stex" ]
+source_file="res://scenes/player/highlight.png"
+dest_files=[ "res://.import/highlight.png-448f0fc4838ebe5fadfaaae0552cc428.stex" ]
 
 [params]
 
