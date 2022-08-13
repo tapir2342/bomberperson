@@ -19,7 +19,6 @@ func _ready() -> void:
 	if Game.is_server():
 		peer_mode = "Server"
 
-	print(peer_mode)
 	$CanvasLayer/Control/PeerMode.text = peer_mode
 
 
