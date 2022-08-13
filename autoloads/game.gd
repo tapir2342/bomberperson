@@ -7,6 +7,7 @@ signal player_died(peer_id)
 #const SERVER_ADDRESS := "51.15.71.106"
 #const SERVER_ADDRESS := "2001:bc8:1820:121c::1"
 
+#const SERVER_ADDRESS := "wss://127.0.0.1"
 const SERVER_ADDRESS := "wss://51.15.71.106"
 
 const SERVER_PORT := 23420
@@ -42,6 +43,9 @@ func _ready():
 # to using WebSocketServer & WebSocketClient. Will be disabled on clients when
 # the server connection fails.
 func _process(_delta) -> void:
+	if not _peer:
+		return
+
 	if is_server():
 		if _peer.is_listening():
 			_peer.poll()
@@ -68,19 +72,14 @@ func _process(_delta) -> void:
 #	_tree.network_peer = peer
 func _setup_network_peer() -> void:
 	if is_server():
-		var err = _setup_network_peer_as_server()
-		if err != OK:
-			print("Server: Failed to listen on port %d. Exiting.", SERVER_PORT)
-			_tree.quit()
+		_peer = _create_server_peer()
 	else:
-		var err = _setup_network_peer_as_client()
-		if err != OK:
-			print("Client: Failed connect to server (server address: %s)", SERVER_ADDRESS)
-			set_process(false)
-			# NOTE: Cannot get_tree().quit() on HTML5.
+		_peer = _create_client_peer()
+
+	_tree.network_peer = _peer
 
 
-func _setup_network_peer_as_server() -> WebSocketServer:
+func _create_server_peer() -> WebSocketServer:
 	print("Generating  server certificates...")
 	var crypto := Crypto.new()
 	var key := crypto.generate_rsa(4096)
@@ -90,16 +89,30 @@ func _setup_network_peer_as_server() -> WebSocketServer:
 	var peer = WebSocketServer.new()
 	peer.private_key = key
 	peer.ssl_certificate = cert
-	_tree.network_peer = peer
-	return peer.listen(SERVER_PORT, PoolStringArray(), true)
+
+	var err = peer.listen(SERVER_PORT, PoolStringArray(), true)
+	if err != OK:
+		print("Server: Failed to listen on port %d. Exiting.", SERVER_PORT)
+		_tree.quit()
+		return null
+
+	return peer
 
 
-func _setup_network_peer_as_client() -> Error:
+func _create_client_peer() -> WebSocketClient:
 	var server_address_port = "%s:%d" % [SERVER_ADDRESS, SERVER_PORT]
 	print("Starting client (server address: %s)..." % server_address_port)
 	var peer = WebSocketClient.new()
-	_tree.network_peer = peer
-	return peer.connect_to_url(server_address_port, PoolStringArray(), true)
+	peer.verify_ssl = false
+
+	var err = peer.connect_to_url(server_address_port, PoolStringArray(), true)
+	if err != OK:
+		print("Client: Failed connect to server (server address: %s)", SERVER_ADDRESS)
+		set_process(false)
+		# NOTE: Cannot get_tree().quit() on HTML5.
+		return null
+
+	return peer
 
 
 func is_server() -> bool:
