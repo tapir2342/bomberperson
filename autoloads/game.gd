@@ -68,29 +68,38 @@ func _process(_delta) -> void:
 #	_tree.network_peer = peer
 func _setup_network_peer() -> void:
 	if is_server():
-		print("Starting server (port: %d)..." % SERVER_PORT)
-		_peer = WebSocketServer.new()
-		# 1) port
-		# 2) protocols: []
-		# 3) gd_map_api: The server will behave like a network peer for the
-		# MultiplayerAPI, connections from non-Godot clients will not work, and
-		# data_received will not be emitted.
-		var err = _peer.listen(SERVER_PORT, PoolStringArray(), true)
+		var err = _setup_network_peer_as_server()
 		if err != OK:
 			print("Server: Failed to listen on port %d. Exiting.", SERVER_PORT)
 			_tree.quit()
 	else:
-		var server_address_port = "%s:%d" % [SERVER_ADDRESS, SERVER_PORT]
-		print("Starting client (server address: %s)..." % server_address_port)
-		_peer = WebSocketClient.new()
-		# See above. NOTE: Also needs gd_mp_api = true.
-		var err = _peer.connect_to_url(server_address_port, PoolStringArray(), true)
+		var err = _setup_network_peer_as_client()
 		if err != OK:
 			print("Client: Failed connect to server (server address: %s)", SERVER_ADDRESS)
 			set_process(false)
 			# NOTE: Cannot get_tree().quit() on HTML5.
 
-	_tree.network_peer = _peer
+
+func _setup_network_peer_as_server() -> WebSocketServer:
+	print("Generating  server certificates...")
+	var crypto := Crypto.new()
+	var key := crypto.generate_rsa(4096)
+	var cert := crypto.generate_self_signed_certificate(key, "CN=example.com,O=A Game Company,C=IT")
+
+	print("Starting server (port: %d)..." % SERVER_PORT)
+	var peer = WebSocketServer.new()
+	peer.private_key = key
+	peer.ssl_certificate = cert
+	_tree.network_peer = peer
+	return peer.listen(SERVER_PORT, PoolStringArray(), true)
+
+
+func _setup_network_peer_as_client() -> Error:
+	var server_address_port = "%s:%d" % [SERVER_ADDRESS, SERVER_PORT]
+	print("Starting client (server address: %s)..." % server_address_port)
+	var peer = WebSocketClient.new()
+	_tree.network_peer = peer
+	return peer.connect_to_url(server_address_port, PoolStringArray(), true)
 
 
 func is_server() -> bool:
