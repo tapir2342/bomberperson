@@ -14,10 +14,10 @@ server-run: server-build
 	docker run -it $(IMAGE)
 
 server-publish: server-build
-	#docker push $(IMAGE)
+	docker push $(IMAGE)
 	# FIXME: Firewall rules prevent this from working.
 	# Error response from daemon: Get "https://registry-1.docker.io/v2/": dial tcp: lookup registry-1.docker.io: Temporary failure in name resolution
-	#ssh root@$(SERVER_IP) 'docker pull $(IMAGE)'
+	ssh root@$(SERVER_IP) 'docker pull $(IMAGE)'
 	-ssh root@$(SERVER_IP) 'docker container kill $(CONTAINER)'
 	-ssh root@$(SERVER_IP) 'docker container rm $(CONTAINER)'
 	ssh root@$(SERVER_IP) 'docker run --name $(CONTAINER) -d -it -p 23420:23420/udp $(IMAGE)'

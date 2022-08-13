@@ -7,7 +7,7 @@ signal player_died(peer_id)
 #const SERVER_ADDRESS := "51.15.71.106"
 #const SERVER_ADDRESS := "2001:bc8:1820:121c::1"
 
-const SERVER_ADDRESS := "ws://51.15.71.106"
+const SERVER_ADDRESS := "wss://51.15.71.106"
 
 const SERVER_PORT := 23420
 const SERVER_MAX_CLIENTS := 4
