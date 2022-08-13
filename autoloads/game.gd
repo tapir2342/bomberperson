@@ -3,8 +3,20 @@ extends Node
 signal started
 signal player_died(peer_id)
 
+# Local:
 #const SERVER_ADDRESS := "127.0.0.1"
-const SERVER_ADDRESS := "51.15.71.106"
+
+# IPv4:
+# ​ WARNING: Unable to change IPv4 address mapping over IPv6 option
+#​    at: set_ipv6_only_enabled (drivers/unix/net_socket_posix.cpp:663) - Unable to change IPv4 address mapping over IPv6 option
+#​    at: set_broadcasting_enabled (drivers/unix/net_socket_posix.cpp:630) - Unable to change broadcast setting
+#​    at: poll (modules/enet/networked_multiplayer_enet.cpp:228) - Method failed.
+#​    ...
+#const SERVER_ADDRESS := "51.15.71.106"
+
+# IPv6:
+const SERVER_ADDRESS := "2001:bc8:1820:121c::1"
+
 const SERVER_PORT := 23420
 const SERVER_MAX_CLIENTS := 4
 
