@@ -29,7 +29,6 @@ var _avatars = [
 	"crocodile",
 	"cow",
 	"dog",
-	"duck",
 ]
 
 
@@ -92,6 +91,7 @@ func _create_server_peer() -> WebSocketServer:
 	var peer = WebSocketServer.new()
 	peer.private_key = key
 	peer.ssl_certificate = cert
+	peer.handshake_timeout = 10.0
 
 	var err = peer.listen(SERVER_PORT, SERVER_PROTOCOLS, true)
 	if err != OK:
