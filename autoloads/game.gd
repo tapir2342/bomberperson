@@ -111,7 +111,7 @@ func _create_client_peer() -> WebSocketClient:
 	var server_address_port = "%s:%d" % [SERVER_ADDRESS, SERVER_PORT]
 	print("Starting client (server address: %s)..." % server_address_port)
 	var peer = WebSocketClient.new()
-	peer.verify_ssl = false
+	peer.verify_ssl = true
 
 	var err = peer.connect_to_url(server_address_port, CLIENT_PROTOCOLS, true)
 	if err != OK:
@@ -139,6 +139,7 @@ func _on_network_peer_connected(id: int) -> void:
 func _on_connected_to_server() -> void:
 	rpc_id(1, "register_player")
 
+
 # Only on clients.
 func _on_connection_failed() -> void:
 	print("Client %d: Failed to connect to server (server address: %s, port: %d)" % [_tree.get_network_unique_id(), SERVER_ADDRESS, SERVER_PORT])
@@ -164,7 +165,7 @@ master func register_player_death() -> void:
 	print(Game.players)
 
 
-remotesync func maybe_start_game():
+remotesync func maybe_start_game() -> void:
 	print("Peer: %d - Players: %s" % [_tree.get_network_unique_id(), players])
 	if len(players) == 2 and not game_started:
 		game_started = true
