@@ -10,7 +10,7 @@ signal player_died(peer_id)
 #const SERVER_DOMAIN := "127.0.0.1"
 const SERVER_DOMAIN := "bomberperson.tapir.lol"
 const SERVER_ADDRESS := "wss://%s" % SERVER_DOMAIN
-const SERVER_PROTOCOLS := PoolStringArray(["ludus"])
+const SERVER_PROTOCOLS := PoolStringArray() #["ludus"])
 const SERVER_PORT := 23420
 const SERVER_MAX_CLIENTS := 4
 
