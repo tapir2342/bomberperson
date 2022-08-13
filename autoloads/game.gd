@@ -8,7 +8,8 @@ signal player_died(peer_id)
 #const SERVER_ADDRESS := "2001:bc8:1820:121c::1"
 
 #const SERVER_ADDRESS := "wss://127.0.0.1"
-const SERVER_ADDRESS := "wss://51.15.71.106"
+const SERVER_DOMAIN := "bomberperson.tapir.lol"
+const SERVER_ADDRESS := "wss://%s" % SERVER_DOMAIN
 
 const SERVER_PORT := 23420
 const SERVER_MAX_CLIENTS := 4
@@ -83,7 +84,7 @@ func _create_server_peer() -> WebSocketServer:
 	print("Generating  server certificates...")
 	var crypto := Crypto.new()
 	var key := crypto.generate_rsa(4096)
-	var cert := crypto.generate_self_signed_certificate(key, "CN=example.com,O=A Game Company,C=IT")
+	var cert := crypto.generate_self_signed_certificate(key, "CN=%s,O=A Game Company,C=IT" % SERVER_DOMAIN)
 
 	print("Starting server (port: %d)..." % SERVER_PORT)
 	var peer = WebSocketServer.new()
@@ -103,7 +104,7 @@ func _create_client_peer() -> WebSocketClient:
 	var server_address_port = "%s:%d" % [SERVER_ADDRESS, SERVER_PORT]
 	print("Starting client (server address: %s)..." % server_address_port)
 	var peer = WebSocketClient.new()
-	peer.verify_ssl = false
+	#peer.verify_ssl = false
 
 	var err = peer.connect_to_url(server_address_port, PoolStringArray(), true)
 	if err != OK:
