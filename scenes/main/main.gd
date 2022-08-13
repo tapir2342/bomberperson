@@ -14,12 +14,12 @@ func _ready() -> void:
 	randomize()
 	Game.connect("started", self, "_on_game_started")
 
-	var peer_mode := "Client"
+	#var peer_mode := "Client"
 
-	if Game.is_server():
-		peer_mode = "Server"
+	#if Game.is_server():
+	#	peer_mode = "Server"
 
-	$CanvasLayer/Control/PeerMode.text = peer_mode
+	#$CanvasLayer/Control/PeerMode.text = peer_mode
 
 
 func _input(event: InputEvent) -> void:

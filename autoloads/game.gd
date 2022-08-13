@@ -3,19 +3,11 @@ extends Node
 signal started
 signal player_died(peer_id)
 
-# Local:
 #const SERVER_ADDRESS := "127.0.0.1"
-
-# IPv4:
-# ​ WARNING: Unable to change IPv4 address mapping over IPv6 option
-#​    at: set_ipv6_only_enabled (drivers/unix/net_socket_posix.cpp:663) - Unable to change IPv4 address mapping over IPv6 option
-#​    at: set_broadcasting_enabled (drivers/unix/net_socket_posix.cpp:630) - Unable to change broadcast setting
-#​    at: poll (modules/enet/networked_multiplayer_enet.cpp:228) - Method failed.
-#​    ...
 #const SERVER_ADDRESS := "51.15.71.106"
+#const SERVER_ADDRESS := "2001:bc8:1820:121c::1"
 
-# IPv6:
-const SERVER_ADDRESS := "2001:bc8:1820:121c::1"
+const SERVER_ADDRESS := "ws://51.15.71.106"
 
 const SERVER_PORT := 23420
 const SERVER_MAX_CLIENTS := 4
@@ -27,6 +19,7 @@ puppetsync var players = {}
 var tile_size := 32
 var game_started = false
 
+var _peer
 var _avatars = [
 	"gorilla",
 	"crocodile",
@@ -45,17 +38,59 @@ func _ready():
 	_setup_network_peer()
 
 
-func _setup_network_peer() -> void:
-	var peer = NetworkedMultiplayerENet.new()
-
+# NOTE: Only needed because this has been changed from NetworkedMultiplayerENet
+# to using WebSocketServer & WebSocketClient. Will be disabled on clients when
+# the server connection fails.
+func _process(_delta) -> void:
 	if is_server():
-		print("Creating server (port: %d, max clients: %d)..." % [SERVER_PORT, SERVER_MAX_CLIENTS])
-		peer.create_server(Game.SERVER_PORT, Game.SERVER_MAX_CLIENTS)
+		if _peer.is_listening():
+			_peer.poll()
 	else:
-		print("Creating client (server address: %s, port: %d)..." % [SERVER_ADDRESS, SERVER_PORT])
-		peer.create_client(Game.SERVER_ADDRESS, Game.SERVER_PORT)
+		_peer.poll()
 
-	_tree.network_peer = peer
+
+# NetworkedMultiplayerENet: Not supported on HTML5.
+# ​ WARNING: Unable to change IPv4 address mapping over IPv6 option
+#​    at: set_ipv6_only_enabled (drivers/unix/net_socket_posix.cpp:663) - Unable to change IPv4 address mapping over IPv6 option
+#​    at: set_broadcasting_enabled (drivers/unix/net_socket_posix.cpp:630) - Unable to change broadcast setting
+#​    at: poll (modules/enet/networked_multiplayer_enet.cpp:228) - Method failed.
+#​    ...
+#func _setup_network_peer() -> void:
+#	var peer = NetworkedMultiplayerENet.new()
+#
+#	if is_server():
+#		print("Creating server (port: %d, max clients: %d)..." % [SERVER_PORT, SERVER_MAX_CLIENTS])
+#		peer.create_server(Game.SERVER_PORT, Game.SERVER_MAX_CLIENTS)
+#	else:
+#		print("Creating client (server address: %s, port: %d)..." % [SERVER_ADDRESS, SERVER_PORT])
+#		peer.create_client(Game.SERVER_ADDRESS, Game.SERVER_PORT)
+#
+#	_tree.network_peer = peer
+func _setup_network_peer() -> void:
+	if is_server():
+		print("Starting server (port: %d)..." % SERVER_PORT)
+		_peer = WebSocketServer.new()
+		# 1) port
+		# 2) protocols: []
+		# 3) gd_map_api: The server will behave like a network peer for the
+		# MultiplayerAPI, connections from non-Godot clients will not work, and
+		# data_received will not be emitted.
+		var err = _peer.listen(SERVER_PORT, PoolStringArray(), true)
+		if err != OK:
+			print("Server: Failed to listen on port %d. Exiting.", SERVER_PORT)
+			_tree.quit()
+	else:
+		var server_address_port = "%s:%d" % [SERVER_ADDRESS, SERVER_PORT]
+		print("Starting client (server address: %s)..." % server_address_port)
+		_peer = WebSocketClient.new()
+		# See above. NOTE: Also needs gd_mp_api = true.
+		var err = _peer.connect_to_url(server_address_port, PoolStringArray(), true)
+		if err != OK:
+			print("Client: Failed connect to server (server address: %s)", SERVER_ADDRESS)
+			set_process(false)
+			# NOTE: Cannot get_tree().quit() on HTML5.
+
+	_tree.network_peer = _peer
 
 
 func is_server() -> bool:
