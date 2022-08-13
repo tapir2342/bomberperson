@@ -18,7 +18,7 @@ server-publish: server-build
 	ssh root@$(SERVER_IP) 'docker pull $(IMAGE)'
 	-ssh root@$(SERVER_IP) 'docker container kill $(CONTAINER)'
 	-ssh root@$(SERVER_IP) 'docker container rm $(CONTAINER)'
-	ssh root@$(SERVER_IP) 'docker run --name $(CONTAINER) -d -it -p 23420:23420/udp $(IMAGE)'
+	ssh root@$(SERVER_IP) 'docker run --name $(CONTAINER) -d -it -p 23420:23420 $(IMAGE)'
 	-ssh root@$(SERVER_IP) 'docker container prune --force'
 
 server-logs:

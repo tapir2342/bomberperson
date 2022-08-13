@@ -48,11 +48,12 @@ func _process(_delta) -> void:
 	if not _peer:
 		return
 
-	if is_server():
-		if _peer.is_listening():
-			_peer.poll()
-	else:
-		_peer.poll()
+	_peer.poll()
+	#if is_server():
+	#	if _peer.is_listening():
+	#		_peer.poll()
+	#else:
+	#	_peer.poll()
 
 
 # NetworkedMultiplayerENet: Not supported on HTML5.
