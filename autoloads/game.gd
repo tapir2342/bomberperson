@@ -40,6 +40,10 @@ func _ready():
 	_tree.connect("connection_failed", self, "_on_connection_failed")
 	_setup_network_peer()
 
+	#var crypto := Crypto.new()
+	#var key := crypto.generate_rsa(4096)
+	#var cert := crypto.generate_self_signed_certificate(key, "CN=%s,O=A Game Company,C=IT" % SERVER_DOMAIN)
+
 
 # NOTE: Only needed because this has been changed from NetworkedMultiplayerENet
 # to using WebSocketServer & WebSocketClient. Will be disabled on clients when
@@ -83,18 +87,15 @@ func _setup_network_peer() -> void:
 
 
 func _create_server_peer() -> WebSocketServer:
-	print("Generating  server certificates...")
-	var crypto := Crypto.new()
-	var key := crypto.generate_rsa(4096)
-	var cert := crypto.generate_self_signed_certificate(key, "CN=%s,O=A Game Company,C=IT" % SERVER_DOMAIN)
-
-	print(str(key))
-	print(str(cert))
+	#print("Generating  server certificates...")
+	#var crypto := Crypto.new()
+	#var key := crypto.generate_rsa(4096)
+	#var cert := crypto.generate_self_signed_certificate(key, "CN=%s,O=A Game Company,C=IT" % SERVER_DOMAIN)
 
 	print("Starting server (port: %d)..." % SERVER_PORT)
 	var peer = WebSocketServer.new()
-	peer.private_key = key
-	peer.ssl_certificate = cert
+	peer.private_key = load("res://server.key")
+	peer.ssl_certificate = load("res://server.crt")
 	peer.handshake_timeout = 10.0
 
 	var err = peer.listen(SERVER_PORT, SERVER_PROTOCOLS, true)
