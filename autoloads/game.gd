@@ -10,9 +10,11 @@ signal player_died(peer_id)
 #const SERVER_ADDRESS := "wss://127.0.0.1"
 const SERVER_DOMAIN := "bomberperson.tapir.lol"
 const SERVER_ADDRESS := "wss://%s" % SERVER_DOMAIN
-
+const SERVER_PROTOCOLS := PoolStringArray(["ludus"])
 const SERVER_PORT := 23420
 const SERVER_MAX_CLIENTS := 4
+
+const CLIENT_PROTOCOLS := SERVER_PROTOCOLS
 
 onready var _tree := get_tree()
 
@@ -91,7 +93,7 @@ func _create_server_peer() -> WebSocketServer:
 	peer.private_key = key
 	peer.ssl_certificate = cert
 
-	var err = peer.listen(SERVER_PORT, PoolStringArray(), true)
+	var err = peer.listen(SERVER_PORT, SERVER_PROTOCOLS, true)
 	if err != OK:
 		print("Server: Failed to listen on port %d. Exiting.", SERVER_PORT)
 		_tree.quit()
@@ -104,9 +106,9 @@ func _create_client_peer() -> WebSocketClient:
 	var server_address_port = "%s:%d" % [SERVER_ADDRESS, SERVER_PORT]
 	print("Starting client (server address: %s)..." % server_address_port)
 	var peer = WebSocketClient.new()
-	#peer.verify_ssl = false
+	peer.verify_ssl = false
 
-	var err = peer.connect_to_url(server_address_port, PoolStringArray(), true)
+	var err = peer.connect_to_url(server_address_port, CLIENT_PROTOCOLS, true)
 	if err != OK:
 		print("Client: Failed connect to server (server address: %s)", SERVER_ADDRESS)
 		set_process(false)
