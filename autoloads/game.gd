@@ -7,7 +7,7 @@ signal player_died(peer_id)
 #const SERVER_ADDRESS := "51.15.71.106"
 #const SERVER_ADDRESS := "2001:bc8:1820:121c::1"
 
-#const SERVER_ADDRESS := "wss://127.0.0.1"
+#const SERVER_DOMAIN := "127.0.0.1"
 const SERVER_DOMAIN := "bomberperson.tapir.lol"
 const SERVER_ADDRESS := "wss://%s" % SERVER_DOMAIN
 const SERVER_PROTOCOLS := PoolStringArray(["ludus"])
@@ -87,6 +87,9 @@ func _create_server_peer() -> WebSocketServer:
 	var crypto := Crypto.new()
 	var key := crypto.generate_rsa(4096)
 	var cert := crypto.generate_self_signed_certificate(key, "CN=%s,O=A Game Company,C=IT" % SERVER_DOMAIN)
+
+	print(key)
+	print(cert)
 
 	print("Starting server (port: %d)..." % SERVER_PORT)
 	var peer = WebSocketServer.new()
