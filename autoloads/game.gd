@@ -88,8 +88,8 @@ func _create_server_peer() -> WebSocketServer:
 	var key := crypto.generate_rsa(4096)
 	var cert := crypto.generate_self_signed_certificate(key, "CN=%s,O=A Game Company,C=IT" % SERVER_DOMAIN)
 
-	print(key)
-	print(cert)
+	print(str(key))
+	print(str(cert))
 
 	print("Starting server (port: %d)..." % SERVER_PORT)
 	var peer = WebSocketServer.new()
