@@ -14,6 +14,7 @@ var from_player
 
 
 func _ready() -> void:
+	# warning-ignore:return_value_discarded
 	_timer.connect("timeout", self, "explode")
 
 

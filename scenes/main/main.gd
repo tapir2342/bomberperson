@@ -2,6 +2,8 @@ extends Node2D
 
 const Player := preload("res://scenes/player/player.tscn")
 
+onready var _ui_waiting: Control = get_node("/root/Main/CanvasLayer/Waiting")
+
 var _spawnpoints := [
 	Vector2(48, 48),
 	Vector2(48, 432),
@@ -12,14 +14,9 @@ var _spawnpoints := [
 
 func _ready() -> void:
 	randomize()
+
+	# warning-ignore:return_value_discarded
 	Game.connect("started", self, "_on_game_started")
-
-	#var peer_mode := "Client"
-
-	#if Game.is_server():
-	#	peer_mode = "Server"
-
-	#$CanvasLayer/Control/PeerMode.text = peer_mode
 
 
 func _input(event: InputEvent) -> void:
@@ -28,6 +25,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_game_started() -> void:
+	_ui_waiting.visible = false
+
 	var i := 0
 	for key in Game.players:
 		var p = Game.players[key]

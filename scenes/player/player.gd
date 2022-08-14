@@ -22,7 +22,9 @@ puppet var puppet_position = Vector2()
 
 
 func _ready():
+	# warning-ignore:return_value_discarded
 	_hurtbox.connect("body_entered", self, "_on_body_entered")
+
 	self._sprite.texture = load(self.sprite_name)
 	puppet_position = global_position
 	$MasterHighlight.visible = self.is_network_master()
@@ -46,13 +48,15 @@ func _physics_process(_delta):
 		position = puppet_position
 
 
-func _on_body_entered(body: Node):
+func _on_body_entered(_body: Node):
 	Game.rpc_id(1, "register_player_death")
 	rpc("die")
 
 
 func move(dir):
 	self.velocity = inputs[dir] * speed * (Game.tile_size / 1)
+
+	# warning-ignore:return_value_discarded
 	self.move_and_collide(self.velocity)
 
 

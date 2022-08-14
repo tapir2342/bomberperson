@@ -14,7 +14,6 @@ RUN wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${G
     && mv Godot_v${GODOT_VERSION}-${RELEASE_NAME}_linux_server.64 /usr/local/bin/godot \
     && rm -f Godot_v${GODOT_VERSION}-${RELEASE_NAME}_linux_server.64.zip
 
-
 WORKDIR /game
 ADD . /game
 CMD ["/usr/local/bin/godot"]

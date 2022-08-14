@@ -3,7 +3,7 @@
 [ext_resource path="res://fonts/Montserrat-Bold.ttf" type="DynamicFontData" id=1]
 
 [resource]
-size = 50
+size = 100
 use_mipmaps = true
 use_filter = true
 font_data = ExtResource( 1 )
