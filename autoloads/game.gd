@@ -13,7 +13,7 @@ const GameClient := preload("res://autoloads/game_client.tscn")
 
 # Not local
 const SERVER_DOMAIN := "bomberperson.tapir.lol"
-const SERVER_ADDRESS := "ws://%s" % SERVER_DOMAIN
+const SERVER_ADDRESS := "wss://%s" % SERVER_DOMAIN
 const SERVER_USE_SSL := true
 
 const SERVER_PROTOCOLS := PoolStringArray() #["ludus"])
